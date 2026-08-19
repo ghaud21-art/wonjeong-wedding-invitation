@@ -3,9 +3,9 @@
  * 배포: 웹 앱 / 액세스 "전체(누구나)" / 실행 계정 "나"
  * 코드 수정 후에는 "배포 관리 → 수정 → 새 버전"으로 업데이트 (URL 유지)
  */
-const SHEET_ID = '';            // 비우면 이 스크립트에 바인딩된 시트 사용
-const GALLERY_FOLDER_ID = '';   // 갤러리 루트 폴더 (탭 이름별 서브폴더 + '메인 사진' 서브폴더)
-const GUEST_PHOTO_FOLDER_ID = ''; // 하객 업로드 사진 폴더
+const SHEET_ID = '1sEuNQ8Abrk0E4nTlhxsqrBsY6ejHurV6Tw3jfOnGfLk';            // "원정이 청첩장 - 설정" 시트
+const GALLERY_FOLDER_ID = '1FHTxbFIM5IprAIqBhZvYHFGp3FgpaETI';   // 갤러리 루트 폴더 (스튜디오 / 스냅사진 / 메인 사진 서브폴더)
+const GUEST_PHOTO_FOLDER_ID = '1SDG1lrCekux_vqzOLzdQz7sw6iOQYGRO'; // 하객사진 폴더
 
 function ss_() {
   return SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
