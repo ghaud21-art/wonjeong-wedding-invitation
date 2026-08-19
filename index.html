@@ -364,7 +364,7 @@
 
   /* ===================== 설정: 예식 정보 (여기를 직접 수정하거나, 배포 후 구글 시트에서 관리하세요) ===================== */
   var CFG = {
-    GAS_URL: '',        // Apps Script 웹 앱 /exec 주소를 배포 후 이곳에 입력
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyYQrO-kT58VaIRELyiOrJWVDNqKNSoSDtDZd8efwyVVaQqxP5TzyRF9uD1xHXHnIVU/exec',
     KAKAO_KEY: '',       // 카카오 디벨로퍼스 JavaScript 키 (선택)
 
     GROOM: 'OOO', BRIDE: '신원정',
@@ -500,7 +500,10 @@
   }
 
   /* ===================== 카운트다운 + 달력 ===================== */
-  function getWeddingDate(){ return new Date(cv('WEDDING', CFG.WEDDING)); }
+  function getWeddingDate(){
+    var d = new Date(cv('WEDDING', CFG.WEDDING));
+    return isNaN(d.getTime()) ? new Date(CFG.WEDDING) : d;
+  }
 
   function tickCountdown(){
     var wed = getWeddingDate();
