@@ -20,24 +20,26 @@ function ensureSheets_() {
   let cfg = ss.getSheetByName('설정');
   if (!cfg) {
     cfg = ss.insertSheet('설정');
-    cfg.getRange(1, 1, 1, 3).setValues([['항목', '내용', '입력 예시']]);
+    cfg.getRange(1, 1, 1, 4).setValues([['항목', '내용', '입력 예시', '키(수정 금지)']]);
     const rows = [
-      ['GROOM', '', '김철수'], ['BRIDE', '', '이영희'], ['SCRIPT', '', 'Chulsoo & Younghee'],
-      ['WEDDING', '', '2026-06-20T14:00:00+09:00'],
-      ['DATE_TEXT', '', '2026년 6월 20일 토요일 14:00'],
-      ['DATE_SHORT', '', '2026. 06. 20  |  토요일 14:00'],
-      ['VENUE', '', '○○웨딩홀 3층 그랜드홀'], ['ADDR', '', '서울시 ○○구 ○○로 123'],
-      ['INTRO1', '', '저희 두 사람, 새로운 시작을 함께해 주세요.'],
-      ['INTRO2', '', '따뜻한 마음으로 축복해 주시면 감사하겠습니다.'],
-      ['GROOM_FATHER', '', '아버지 성함'], ['GROOM_MOTHER', '', '어머니 성함'],
-      ['BRIDE_FATHER', '', '아버지 성함'], ['BRIDE_MOTHER', '', '어머니 성함'],
-      ['NAVI_KAKAO', '', 'https://kko.to/...'], ['NAVI_NAVER', '', 'https://naver.me/...'], ['NAVI_TMAP', '', 'https://tmap.life/...'],
-      ['TRAFFIC_SUBWAY', '', '2호선 ○○역 3번 출구 도보 5분'], ['TRAFFIC_BUS', '', '146, 341 ○○정류장 하차'],
-      ['TRAFFIC_CAR', '', '내비게이션에 "○○웨딩홀" 검색'], ['TRAFFIC_PARKING', '', '건물 지하 2시간 무료']
+      ['신랑 이름', '', '김철수', 'GROOM'], ['신부 이름', '', '이영희', 'BRIDE'],
+      ['공유용 영문 이름(선택)', '', 'Chulsoo & Younghee', 'SCRIPT'],
+      ['예식 일시 (형식을 반드시 지켜주세요)', '', '2026-06-20T14:00:00+09:00', 'WEDDING'],
+      ['예식 일시 안내 문구', '', '2026년 6월 20일 토요일 14:00', 'DATE_TEXT'],
+      ['예식 일시 짧은 문구', '', '2026. 06. 20  |  토요일 14:00', 'DATE_SHORT'],
+      ['예식장 이름', '', '○○웨딩홀 3층 그랜드홀', 'VENUE'], ['예식장 주소', '', '서울시 ○○구 ○○로 123', 'ADDR'],
+      ['인사말 첫째 줄', '', '저희 두 사람, 새로운 시작을 함께해 주세요.', 'INTRO1'],
+      ['인사말 둘째 줄', '', '따뜻한 마음으로 축복해 주시면 감사하겠습니다.', 'INTRO2'],
+      ['신랑측 아버지 성함', '', '아버지 성함', 'GROOM_FATHER'], ['신랑측 어머니 성함', '', '어머니 성함', 'GROOM_MOTHER'],
+      ['신부측 아버지 성함', '', '아버지 성함', 'BRIDE_FATHER'], ['신부측 어머니 성함', '', '어머니 성함', 'BRIDE_MOTHER'],
+      ['카카오내비 링크', '', 'https://kko.to/...', 'NAVI_KAKAO'], ['네이버지도 링크', '', 'https://naver.me/...', 'NAVI_NAVER'], ['티맵 링크', '', 'https://tmap.life/...', 'NAVI_TMAP'],
+      ['지하철 안내', '', '2호선 ○○역 3번 출구 도보 5분', 'TRAFFIC_SUBWAY'], ['버스 안내', '', '146, 341 ○○정류장 하차', 'TRAFFIC_BUS'],
+      ['자가용 안내', '', '내비게이션에 "○○웨딩홀" 검색', 'TRAFFIC_CAR'], ['주차 안내', '', '건물 지하 2시간 무료', 'TRAFFIC_PARKING']
     ];
-    cfg.getRange(2, 1, rows.length, 3).setValues(rows);
+    cfg.getRange(2, 1, rows.length, 4).setValues(rows);
     // 날짜/시간이 Date 타입으로 자동 변환되며 생기는 시간대 오차 방지: '내용' 열 텍스트 서식 고정
     cfg.getRange('B:B').setNumberFormat('@');
+    cfg.setColumnWidth(1, 200); cfg.setColumnWidth(2, 220); cfg.setColumnWidth(4, 90);
   }
   let acc = ss.getSheetByName('계좌');
   if (!acc) {
@@ -71,7 +73,7 @@ function getConfig_() {
   const out = {};
   const cfg = ss.getSheetByName('설정').getDataRange().getValues();
   for (let i = 1; i < cfg.length; i++) {
-    const key = String(cfg[i][0]).trim();
+    const key = String(cfg[i][3]).trim(); // D열의 기술 키를 기준으로 읽음 (A열은 사람이 보는 한글 라벨)
     if (key) out[key] = String(cfg[i][1]);
   }
   // 부모님 줄: 가운뎃점 조합은 프론트에서 처리 (빈 값 제외 후 · 연결)
