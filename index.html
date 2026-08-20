@@ -6,7 +6,7 @@
 <title>원정 ♥ 정이 결혼식에 초대합니다</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Great+Vibes&family=Song+Myung&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg-outer:#e8e4da; --bg:#faf8f2; --card:#fff; --sub-card:#fdfcf8;
@@ -14,6 +14,7 @@
     --sage:#7d8465; --sage-hover:#5f6748; --sage-soft:#eef0e6; --dark:#4a4238; --heart:#9c5a52; --kakao:#f5d949; --kakao-text:#3a2d00;
     --line:#d8cfc0; --line-dash:#cfc6b5; --line-input:#e0d7c6; --line-card:#e6ddcd; --line-sub:#ece4d4; --line-row:#f0e9db;
     --sun:#c0907f; --sun-cell:#b0705f;
+    --font-title:'Song Myung',serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg-outer);}
@@ -43,14 +44,14 @@
   .hero-topline .label{font-family:'Noto Serif KR',serif;font-size:11px;letter-spacing:4px;}
   .bgm-btn{position:absolute;top:52px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.55);backdrop-filter:blur(4px);color:#6b5d43;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .hero-caption{position:absolute;left:0;right:0;bottom:0;padding:40px 24px 26px;background:linear-gradient(to top,rgba(250,248,242,.96) 30%,rgba(250,248,242,0));text-align:center;}
-  .hero-caption .names{font-family:'Noto Serif KR',serif;font-size:22px;letter-spacing:2px;color:#3f3a30;}
+  .hero-caption .names{font-family:var(--font-title);font-size:26px;letter-spacing:2px;color:#3f3a30;}
   .hero-caption .names .heart{color:var(--heart);font-size:15px;}
   .hero-caption .date{margin-top:10px;font-size:13px;letter-spacing:1px;color:var(--text-sub2);}
   .hero-caption .venue{margin-top:4px;font-size:12px;color:var(--text-dim1);}
 
   /* Intro */
   .intro{position:relative;margin-top:-16px;border-radius:32px 32px 0 0;background:var(--bg);padding:44px 28px 10px;text-align:center;}
-  .intro .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;letter-spacing:6px;color:var(--text);line-height:1.6;}
+  .intro .title{font-family:var(--font-title);font-size:22px;font-weight:400;letter-spacing:6px;color:var(--text);line-height:1.6;}
   .intro .date-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;color:var(--text-sub2);font-size:13px;letter-spacing:2px;}
   .intro .rule{width:56px;margin:22px auto 0;border-top:1px solid var(--line);}
   .intro .copy{margin:22px 0 0;font-family:'Noto Serif KR',serif;font-size:14px;line-height:2;color:var(--text-sub1);}
@@ -65,7 +66,7 @@
   /* Chapter */
   .chapter{padding:26px 24px 8px;text-align:center;}
   .chapter-kicker{font-family:'Great Vibes',cursive;font-size:20px;color:var(--sage);}
-  .chapter-title{margin:6px 0 0;font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--text);letter-spacing:2px;}
+  .chapter-title{margin:6px 0 0;font-family:var(--font-title);font-size:20px;font-weight:400;color:var(--text);letter-spacing:2px;}
 
   /* Countdown */
   .cd-row{display:flex;justify-content:center;gap:8px;margin-top:20px;}
@@ -97,6 +98,10 @@
   .traffic-card{background:var(--card);border:1px solid var(--line-card);border-radius:12px;padding:14px;}
   .traffic-card .k{font-size:12px;font-weight:700;color:var(--sage);letter-spacing:1px;}
   .traffic-card .v{font-size:12px;color:var(--text-sub2);margin-top:6px;line-height:1.7;}
+  .mp-info{margin-top:24px;}
+  .mp-card{background:var(--card);border:1px solid var(--line-card);border-radius:14px;padding:16px;margin-top:12px;text-align:left;}
+  .mp-time{display:inline-block;padding:6px 12px;border-radius:16px;background:var(--sage-soft);color:var(--sage-hover);font-size:12px;font-weight:700;letter-spacing:.5px;}
+  .mp-desc{margin-top:12px;font-size:12.5px;color:var(--text-sub2);line-height:1.8;white-space:pre-line;}
 
   /* Ch3 gallery */
   .tab-row{display:flex;justify-content:center;gap:6px;margin-top:18px;flex-wrap:wrap;}
@@ -240,13 +245,16 @@
     <button class="btn-outline" id="btn-copy-addr">주소 복사하기</button>
     <div class="navi-row" id="navi-row"></div>
     <div class="traffic-grid" id="traffic-grid"></div>
+    <div class="mp-info">
+      <div class="tab-row" id="mp-tab-row"></div>
+      <div class="mp-card" id="mp-card"></div>
+    </div>
   </section>
 
   <div class="divider"><div class="ln"></div><div class="dot"></div><div class="ln"></div></div>
   <section id="ch3" class="chapter reveal">
     <div class="chapter-kicker">chapter three</div>
     <h2 class="chapter-title">갤러리</h2>
-    <div class="tab-row" id="tab-row"></div>
     <div class="gallery-grid" id="gallery-grid"></div>
     <div class="gallery-hint">구글 드라이브 갤러리 폴더에 사진을 넣으면 자동으로 표시됩니다</div>
   </section>
@@ -376,9 +384,10 @@
     INTRO2: '따뜻한 마음으로 축복해 주시면 감사하겠습니다.',
     GROOM_PARENTS: ['아버지 (추후 입력)', '어머니 (추후 입력)'],
     BRIDE_PARENTS: ['아버지 (추후 입력)', '어머니 (추후 입력)'],
-    TABS: ['스튜디오', '스냅사진'],
     NAVI: { kakao: '', naver: '', tmap: '' },
     TRAFFIC: [['지하철', '추후 입력'], ['버스', '추후 입력'], ['자가용', '추후 입력'], ['주차', '추후 입력']],
+    MEAL_INFO: '식사 안내 (추후 입력)', MEAL_TIME: '시간 (추후 입력)',
+    PARKING_INFO: '주차 안내 (추후 입력)', PARKING_TIME: '시간 (추후 입력)',
     ACC_G: [
       { rel: '신랑', name: 'OOO', bank: '은행', num: '계좌번호 추후 입력', kpay: '' },
       { rel: '아버지', name: 'OOO', bank: '은행', num: '계좌번호 추후 입력', kpay: '' },
@@ -396,7 +405,7 @@
   var galleryData = null; // GAS ?action=gallery 응답
   var state = {
     bgm: false,
-    tab: 0,
+    mpTab: 'meal',
     gEntries: [],
     rSide: '', rAttend: '', rMeal: '', rCount: 1, rDone: false,
     accOpen: { g: true, b: false },
@@ -463,7 +472,7 @@
   }
   function fetchGallery(){
     getJson('gallery').then(function(j){
-      if (j && j.ok) { galleryData = j.gallery; applyGalleryToHero(); renderGalleryTabs(); renderGalleryGrid(); }
+      if (j && j.ok) { galleryData = j.gallery; applyGalleryToHero(); renderGalleryGrid(); }
     });
   }
   function fetchGuestbook(){
@@ -494,8 +503,8 @@
     renderCountdownAndCalendar();
     renderNavi();
     renderTraffic();
-    renderGalleryTabs();
     renderGalleryGrid();
+    renderMealParking();
     renderAccounts();
   }
 
@@ -568,28 +577,35 @@
     }).join('');
   }
 
-  /* ===================== 갤러리 ===================== */
-  function currentTabNames(){
-    if (galleryData && galleryData.tabs && Object.keys(galleryData.tabs).length) return Object.keys(galleryData.tabs);
-    return cv('TABS', CFG.TABS);
-  }
-  function renderGalleryTabs(){
-    var tabs = currentTabNames();
-    if (state.tab >= tabs.length) state.tab = 0;
-    $('tab-row').innerHTML = tabs.map(function(name, i){
-      return '<button class="tab-btn' + (state.tab === i ? ' active' : '') + '" data-tab="' + i + '">' + escapeHtml(name) + '</button>';
+  /* ===================== 식사 & 주차 안내 ===================== */
+  function renderMealParking(){
+    var tabs = [['meal', '식사 안내'], ['parking', '주차 안내']];
+    $('mp-tab-row').innerHTML = tabs.map(function(t){
+      return '<button class="tab-btn' + (state.mpTab === t[0] ? ' active' : '') + '" data-mp="' + t[0] + '">' + t[1] + '</button>';
     }).join('');
-    Array.prototype.forEach.call($('tab-row').querySelectorAll('.tab-btn'), function(btn){
+    Array.prototype.forEach.call($('mp-tab-row').querySelectorAll('.tab-btn'), function(btn){
       btn.addEventListener('click', function(){
-        state.tab = parseInt(btn.getAttribute('data-tab'), 10);
-        renderGalleryTabs(); renderGalleryGrid();
+        state.mpTab = btn.getAttribute('data-mp');
+        renderMealParking();
       });
     });
+    var isMeal = state.mpTab === 'meal';
+    var time = isMeal ? cv('MEAL_TIME', CFG.MEAL_TIME) : cv('PARKING_TIME', CFG.PARKING_TIME);
+    var info = isMeal ? cv('MEAL_INFO', CFG.MEAL_INFO) : cv('PARKING_INFO', CFG.PARKING_INFO);
+    $('mp-card').innerHTML = '<div class="mp-time">' + escapeHtml(time) + '</div><div class="mp-desc">' + escapeHtml(info) + '</div>';
+  }
+
+  /* ===================== 갤러리 (탭 구분 없이 폴더 전체를 한 그리드로) ===================== */
+  function allGalleryImages(){
+    if (!galleryData || !galleryData.tabs) return null;
+    var all = [];
+    Object.keys(galleryData.tabs).forEach(function(name){
+      all = all.concat(galleryData.tabs[name] || []);
+    });
+    return all;
   }
   function renderGalleryGrid(){
-    var tabs = currentTabNames();
-    var tabName = tabs[state.tab] || '';
-    var images = (galleryData && galleryData.tabs && galleryData.tabs[tabName]) || null;
+    var images = allGalleryImages();
     var html = '';
     if (images && images.length) {
       images.forEach(function(img){
@@ -597,7 +613,7 @@
       });
     } else {
       for (var n = 1; n <= 6; n++) {
-        html += '<div class="gallery-tile" data-placeholder="1"><span>' + escapeHtml(tabName) + ' 사진 ' + n + '</span></div>';
+        html += '<div class="gallery-tile" data-placeholder="1"><span>사진 ' + n + '</span></div>';
       }
     }
     $('gallery-grid').innerHTML = html;
