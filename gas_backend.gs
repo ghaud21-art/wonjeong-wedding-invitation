@@ -59,6 +59,7 @@ function ensureSheets_() {
   if (!gb) {
     gb = ss.insertSheet('방명록');
     gb.getRange(1, 1, 1, 5).setValues([['시각', '이름', '메시지', '비밀번호', 'ID']]);
+    gb.getRange('A:A').setNumberFormat('@');
   }
   let rs = ss.getSheetByName('참석');
   if (!rs) {
@@ -115,6 +116,12 @@ function listFolderImages_(folder) {
   arr.sort(function (a, b) { return a.name.localeCompare(b.name); });
   return arr;
 }
+/* ── 시각 셀이 구글 시트에 의해 Date 타입으로 자동 변환된 경우도 안전하게 문자열로 ── */
+function fmtTime_(v) {
+  if (Object.prototype.toString.call(v) === '[object Date]') return Utilities.formatDate(v, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+  return String(v || '');
+}
+
 /* ── 방명록 행 찾기: ID열이 비어있는 옛 데이터는 행 번호로 대체 식별 ── */
 function guestRowId_(values, i) {
   return String(values[i][4] || '').trim() || ('r' + i);
@@ -150,7 +157,7 @@ function doGet(e) {
       const v = ss_().getSheetByName('방명록').getDataRange().getValues();
       const list = [];
       // 비밀번호(4번째 열)는 절대 응답에 포함하지 않음
-      for (let i = v.length - 1; i >= 1; i--) list.push({ id: guestRowId_(v, i), time: String(v[i][0]), name: String(v[i][1]), msg: String(v[i][2]) });
+      for (let i = v.length - 1; i >= 1; i--) list.push({ id: guestRowId_(v, i), time: fmtTime_(v[i][0]), name: String(v[i][1]), msg: String(v[i][2]) });
       return json_({ ok: true, list: list });
     }
     if (action === 'photos') {
