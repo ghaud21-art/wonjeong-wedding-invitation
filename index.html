@@ -119,6 +119,7 @@
   .field{width:100%;box-sizing:border-box;margin-top:10px;padding:11px 12px;border:1px solid var(--line-input);border-radius:8px;font-size:13px;background:var(--sub-card);outline:none;}
   .field + .field{margin-top:8px;}
   textarea.field{resize:none;}
+  .field-counter{margin-top:4px;text-align:right;font-size:10.5px;color:var(--text-dim2);}
   .btn-solid-sage{margin-top:10px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--sage);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
   .btn-solid-dark{margin-top:12px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--dark);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
 
@@ -130,18 +131,18 @@
   .guest-item .item-actions{display:flex;gap:6px;margin-top:8px;}
   .guest-item .item-actions button{font-size:10.5px;padding:4px 9px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--text-dim1);cursor:pointer;}
 
-  /* 방명록 편지 카드 */
+  /* 방명록 편지 카드: 옆으로 넘기는 캐러셀 */
   .letter-wrap{margin-top:22px;}
-  .letter-card{position:relative;min-height:210px;background:var(--sub-card);border:1px solid var(--line-sub);border-radius:14px;padding:30px 24px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:url('assets/img/wreath.png');background-repeat:no-repeat;background-position:center 4px;background-size:76% auto;}
-  .letter-card .l-name{margin-top:58px;font-family:var(--font-title);font-size:15px;color:var(--text);}
-  .letter-card .l-msg{margin-top:10px;font-size:13px;color:var(--text-sub2);line-height:1.8;white-space:pre-line;}
-  .letter-card .l-empty{margin-top:64px;font-size:12.5px;color:var(--text-dim2);}
-  .letter-card .l-actions{margin-top:14px;display:flex;gap:8px;}
-  .letter-card .l-actions button{font-size:11px;padding:5px 11px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--text-dim1);cursor:pointer;}
-  .letter-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;}
-  .letter-arrow{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--text-sub1);cursor:pointer;font-size:16px;line-height:1;}
-  .letter-arrow:disabled{opacity:.35;cursor:default;}
-  .letter-count{font-size:11.5px;color:var(--text-dim2);min-width:44px;text-align:center;}
+  .letter-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 46px 10px;margin:0 -24px;}
+  .letter-track::-webkit-scrollbar{display:none;}
+  .letter-card{position:relative;flex:0 0 76%;min-height:230px;background:var(--sub-card);border:1px solid var(--line-sub);border-radius:14px;padding:30px 20px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:center;background-image:url('assets/img/wreath.png');background-repeat:no-repeat;background-position:center 0;background-size:88% auto;}
+  .letter-card .l-msg{margin-top:56px;font-size:13px;color:var(--text-sub2);line-height:1.7;white-space:pre-line;max-height:92px;overflow-y:auto;padding:0 4px;}
+  .letter-card .l-from{margin-top:14px;font-family:var(--font-title);font-size:14px;color:var(--text);}
+  .letter-card .l-date{margin-top:3px;font-size:10.5px;color:var(--text-dim2);letter-spacing:.5px;}
+  .letter-card .l-empty{font-size:12.5px;color:var(--text-dim2);}
+  .letter-card .l-fabs{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;}
+  .letter-card .l-fabs button{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--text-dim1);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .letter-hint{text-align:center;font-size:11.5px;color:var(--text-dim2);margin-top:2px;}
 
   /* 전체화면 오버레이 페이지 (방명록 전체보기) */
   .page-overlay{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column;max-width:430px;margin:0 auto;}
@@ -294,19 +295,16 @@
     <div class="card">
       <div class="card-title">축하 메시지 남기기</div>
       <input type="text" id="guest-name" class="field" placeholder="이름">
-      <textarea id="guest-msg" class="field" placeholder="따뜻한 축하의 한마디를 남겨주세요" rows="3"></textarea>
+      <textarea id="guest-msg" class="field" placeholder="따뜻한 축하의 한마디를 남겨주세요" rows="3" maxlength="120"></textarea>
+      <div class="field-counter" id="guest-msg-counter">0 / 120</div>
       <input type="password" id="guest-pw" class="field" placeholder="비밀번호 (수정·삭제 시 필요해요)" inputmode="numeric">
       <button class="btn-solid-sage" id="guest-submit">남기기</button>
     </div>
 
     <div class="letter-wrap">
-      <div class="letter-card" id="letter-card"></div>
-      <div class="letter-nav">
-        <button class="letter-arrow" id="letter-prev" aria-label="이전 편지">‹</button>
-        <div class="letter-count" id="letter-count"></div>
-        <button class="letter-arrow" id="letter-next" aria-label="다음 편지">›</button>
-      </div>
-      <button class="btn-outline" id="btn-guest-all" style="margin-top:14px;">방명록 전체보기</button>
+      <div class="letter-track" id="letter-track"></div>
+      <div class="letter-hint">← 옆으로 넘겨보세요 →</div>
+      <button class="btn-outline" id="btn-guest-all" style="margin-top:12px;">방명록 전체보기</button>
     </div>
 
     <div class="card">
@@ -452,7 +450,6 @@
   var state = {
     bgm: false,
     mpTab: 'meal',
-    letterIndex: 0,
     gEntries: [],
     rSide: '', rAttend: '', rMeal: '', rCount: 1, rDone: false,
     accOpen: { g: true, b: false },
@@ -715,39 +712,39 @@
     }, { passive: true });
   })();
 
-  /* ===================== 방명록: 편지 카드 + 전체보기 ===================== */
+  /* ===================== 방명록: 옆으로 넘기는 편지 카드 + 전체보기 ===================== */
+  function formatGuestDate(t){
+    if (!t) return '';
+    return String(t).slice(0, 10).replace(/-/g, '.');
+  }
   function renderGuestList(){
-    renderLetterCard();
+    renderLetterTrack();
     if ($('guest-overlay').classList.contains('open')) renderGuestOverlayList();
   }
-  function renderLetterCard(){
-    var n = state.gEntries.length;
-    if (!n) {
-      $('letter-card').innerHTML = '<div class="l-empty">첫 번째 축하 메시지를 남겨주세요</div>';
-      $('letter-count').textContent = '';
-      $('letter-prev').disabled = true; $('letter-next').disabled = true;
+  function renderLetterTrack(){
+    var track = $('letter-track');
+    if (!state.gEntries.length) {
+      track.innerHTML = '<div class="letter-card"><div class="l-empty">첫 번째 축하 메시지를 남겨주세요</div></div>';
       return;
     }
-    if (state.letterIndex >= n) state.letterIndex = n - 1;
-    if (state.letterIndex < 0) state.letterIndex = 0;
-    var e = state.gEntries[state.letterIndex];
-    $('letter-card').innerHTML =
-      '<div class="l-name">' + escapeHtml(e.name) + '</div>' +
-      '<div class="l-msg">' + escapeHtml(e.msg) + '</div>' +
-      '<div class="l-actions">' +
-      '<button data-act="edit">수정</button><button data-act="delete">삭제</button>' +
-      '</div>';
-    $('letter-count').textContent = (state.letterIndex + 1) + ' / ' + n;
-    $('letter-prev').disabled = state.letterIndex <= 0;
-    $('letter-next').disabled = state.letterIndex >= n - 1;
-    var card = $('letter-card');
-    var editBtn = card.querySelector('[data-act="edit"]');
-    var delBtn = card.querySelector('[data-act="delete"]');
-    if (editBtn) editBtn.addEventListener('click', function(){ editGuestEntry(e); });
-    if (delBtn) delBtn.addEventListener('click', function(){ deleteGuestEntry(e); });
+    track.innerHTML = state.gEntries.map(function(e){
+      return '<div class="letter-card" data-id="' + escapeHtml(e.id) + '">' +
+        '<div class="l-msg">' + escapeHtml(e.msg) + '</div>' +
+        '<div class="l-from">from. ' + escapeHtml(e.name) + '</div>' +
+        '<div class="l-date">' + escapeHtml(formatGuestDate(e.time)) + '</div>' +
+        '<div class="l-fabs"><button data-act="edit" aria-label="수정">✎</button><button data-act="delete" aria-label="삭제">×</button></div>' +
+        '</div>';
+    }).join('');
+    Array.prototype.forEach.call(track.querySelectorAll('.letter-card'), function(card){
+      var id = card.getAttribute('data-id');
+      var e = state.gEntries.find(function(x){ return x.id === id; });
+      if (!e) return;
+      var editBtn = card.querySelector('[data-act="edit"]');
+      var delBtn = card.querySelector('[data-act="delete"]');
+      if (editBtn) editBtn.addEventListener('click', function(){ editGuestEntry(e); });
+      if (delBtn) delBtn.addEventListener('click', function(){ deleteGuestEntry(e); });
+    });
   }
-  $('letter-prev').addEventListener('click', function(){ state.letterIndex--; renderLetterCard(); });
-  $('letter-next').addEventListener('click', function(){ state.letterIndex++; renderLetterCard(); });
 
   function editGuestEntry(e){
     var pw = window.prompt('비밀번호를 입력해주세요');
@@ -823,11 +820,17 @@
     if (!pw) return showToast('수정·삭제 시 필요한 비밀번호를 입력해주세요');
     var id = newId();
     post('guestbook', { id: id, name: name, msg: msg, pw: pw });
-    state.gEntries = [{ id: id, name: name, msg: msg }].concat(state.gEntries);
-    state.letterIndex = 0;
+    var d = new Date();
+    var time = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    state.gEntries = [{ id: id, name: name, msg: msg, time: time }].concat(state.gEntries);
     renderGuestList();
     $('guest-name').value = ''; $('guest-msg').value = ''; $('guest-pw').value = '';
+    $('guest-msg-counter').textContent = '0 / 120';
+    $('letter-track').scrollTo({ left: 0, behavior: 'smooth' });
     showToast('소중한 메시지 감사합니다');
+  });
+  $('guest-msg').addEventListener('input', function(){
+    $('guest-msg-counter').textContent = $('guest-msg').value.length + ' / 120';
   });
 
   /* ===================== 참석 여부 ===================== */
