@@ -58,7 +58,7 @@ function ensureSheets_() {
   let gb = ss.getSheetByName('방명록');
   if (!gb) {
     gb = ss.insertSheet('방명록');
-    gb.getRange(1, 1, 1, 3).setValues([['시각', '이름', '메시지']]);
+    gb.getRange(1, 1, 1, 5).setValues([['시각', '이름', '메시지', '비밀번호', 'ID']]);
   }
   let rs = ss.getSheetByName('참석');
   if (!rs) {
@@ -115,6 +115,17 @@ function listFolderImages_(folder) {
   arr.sort(function (a, b) { return a.name.localeCompare(b.name); });
   return arr;
 }
+/* ── 방명록 행 찾기: ID열이 비어있는 옛 데이터는 행 번호로 대체 식별 ── */
+function guestRowId_(values, i) {
+  return String(values[i][4] || '').trim() || ('r' + i);
+}
+function findGuestRowIndex_(values, id) {
+  for (let i = 1; i < values.length; i++) {
+    if (guestRowId_(values, i) === id) return i;
+  }
+  return -1;
+}
+
 function getGallery_() {
   if (!GALLERY_FOLDER_ID) return { tabs: {}, main: null };
   const root = DriveApp.getFolderById(GALLERY_FOLDER_ID);
@@ -138,7 +149,8 @@ function doGet(e) {
       ensureSheets_();
       const v = ss_().getSheetByName('방명록').getDataRange().getValues();
       const list = [];
-      for (let i = v.length - 1; i >= 1; i--) list.push({ time: String(v[i][0]), name: String(v[i][1]), msg: String(v[i][2]) });
+      // 비밀번호(4번째 열)는 절대 응답에 포함하지 않음
+      for (let i = v.length - 1; i >= 1; i--) list.push({ id: guestRowId_(v, i), time: String(v[i][0]), name: String(v[i][1]), msg: String(v[i][2]) });
       return json_({ ok: true, list: list });
     }
     if (action === 'photos') {
@@ -159,7 +171,18 @@ function doPost(e) {
     const ss = ss_();
     const now = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
     if (body.action === 'guestbook') {
-      ss.getSheetByName('방명록').appendRow([now, body.name, body.msg]);
+      ss.getSheetByName('방명록').appendRow([now, body.name, body.msg, body.pw || '', body.id || '']);
+      return json_({ ok: true });
+    }
+    if (body.action === 'guestbook_edit' || body.action === 'guestbook_delete') {
+      const sheet = ss.getSheetByName('방명록');
+      const values = sheet.getDataRange().getValues();
+      const idx = findGuestRowIndex_(values, String(body.id || ''));
+      if (idx === -1) return json_({ ok: false, error: '메시지를 찾을 수 없습니다' });
+      const savedPw = String(values[idx][3] || '');
+      if (savedPw !== String(body.pw || '')) return json_({ ok: false, error: '비밀번호가 일치하지 않습니다' });
+      if (body.action === 'guestbook_edit') sheet.getRange(idx + 1, 3).setValue(body.msg || '');
+      else sheet.deleteRow(idx + 1);
       return json_({ ok: true });
     }
     if (body.action === 'rsvp') {
