@@ -122,25 +122,25 @@
   .btn-solid-sage{margin-top:10px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--sage);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
   .btn-solid-dark{margin-top:12px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--dark);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
 
-  .guest-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
   .guest-empty{text-align:center;font-size:12px;color:var(--text-dim2);padding:10px 0;}
-  .guest-item{background:var(--sub-card);border:1px solid var(--line-sub);border-radius:10px;padding:12px 14px;}
-  .guest-item .name{font-size:12.5px;font-weight:700;color:var(--text-sub1);}
-  .guest-item .msg{font-size:12.5px;color:var(--text-sub2);margin-top:4px;line-height:1.7;white-space:pre-line;}
-  .guest-item .item-actions{display:flex;gap:6px;margin-top:8px;}
-  .guest-item .item-actions button{font-size:10.5px;padding:4px 9px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--text-dim1);cursor:pointer;}
+
+  /* 편지지 텍스처가 적용된 카드 (캐러셀 · 전체보기 공용) */
+  .l-msg{font-size:13px;color:var(--text-sub2);line-height:1.7;white-space:pre-line;}
+  .l-from{margin-top:12px;font-family:var(--font-title);font-size:14px;color:var(--text);}
+  .l-date{margin-top:3px;font-size:10.5px;color:var(--text-dim2);letter-spacing:.5px;}
+  .l-empty{font-size:12.5px;color:var(--text-dim2);}
+  .card-fabs{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;}
+  .card-fabs button{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--text-dim1);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
 
   /* 방명록 편지 카드: 옆으로 넘기는 캐러셀 */
   .letter-wrap{margin-top:22px;}
   .letter-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 46px 10px;margin:0 -24px;}
   .letter-track::-webkit-scrollbar{display:none;}
-  .letter-card{position:relative;flex:0 0 76%;aspect-ratio:1/1;background:var(--sub-card);border:1px solid var(--line-sub);border-radius:14px;padding:15% 15%;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:center;background-image:url('assets/img/letter-paper.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;}
-  .letter-card .l-msg{font-size:13px;color:var(--text-sub2);line-height:1.7;white-space:pre-line;max-height:38%;overflow-y:auto;padding:0 4px;}
-  .letter-card .l-from{margin-top:14px;font-family:var(--font-title);font-size:14px;color:var(--text);}
-  .letter-card .l-date{margin-top:3px;font-size:10.5px;color:var(--text-dim2);letter-spacing:.5px;}
-  .letter-card .l-empty{font-size:12.5px;color:var(--text-dim2);}
-  .letter-card .l-fabs{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;}
-  .letter-card .l-fabs button{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--text-dim1);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .letter-card{position:relative;flex:0 0 76%;aspect-ratio:1/1;background:var(--sub-card);border:1px solid var(--line-sub);border-radius:14px;padding:12%;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:center;background-image:url('assets/img/letter-paper.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;}
+  .letter-card .l-msg{max-height:58%;overflow-y:auto;padding:0 4px;}
+
+  /* 방명록 전체보기 목록 카드 */
+  .letter-list-card{position:relative;background:var(--sub-card);border:1px solid var(--line-sub);border-radius:12px;padding:22px 20px 46px;text-align:center;background-image:url('assets/img/letter-paper.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;}
   .letter-hint{text-align:center;font-size:11.5px;color:var(--text-dim2);margin-top:2px;}
 
   /* 전체화면 오버레이 페이지 (방명록 전체보기) */
@@ -719,21 +719,14 @@
     renderLetterTrack();
     if ($('guest-overlay').classList.contains('open')) renderGuestOverlayList();
   }
-  function renderLetterTrack(){
-    var track = $('letter-track');
-    if (!state.gEntries.length) {
-      track.innerHTML = '<div class="letter-card"><div class="l-empty">첫 번째 축하 메시지를 남겨주세요</div></div>';
-      return;
-    }
-    track.innerHTML = state.gEntries.map(function(e){
-      return '<div class="letter-card" data-id="' + escapeHtml(e.id) + '">' +
-        '<div class="l-msg">' + escapeHtml(e.msg) + '</div>' +
-        '<div class="l-from">from. ' + escapeHtml(e.name) + '</div>' +
-        '<div class="l-date">' + escapeHtml(formatGuestDate(e.time)) + '</div>' +
-        '<div class="l-fabs"><button data-act="edit" aria-label="수정">✎</button><button data-act="delete" aria-label="삭제">×</button></div>' +
-        '</div>';
-    }).join('');
-    Array.prototype.forEach.call(track.querySelectorAll('.letter-card'), function(card){
+  function letterCardInner(e){
+    return '<div class="l-msg">' + escapeHtml(e.msg) + '</div>' +
+      '<div class="l-from">from. ' + escapeHtml(e.name) + '</div>' +
+      '<div class="l-date">' + escapeHtml(formatGuestDate(e.time)) + '</div>' +
+      '<div class="card-fabs"><button data-act="edit" aria-label="수정">✎</button><button data-act="delete" aria-label="삭제">×</button></div>';
+  }
+  function bindCardActions(container){
+    Array.prototype.forEach.call(container.querySelectorAll('[data-id]'), function(card){
       var id = card.getAttribute('data-id');
       var e = state.gEntries.find(function(x){ return x.id === id; });
       if (!e) return;
@@ -742,6 +735,17 @@
       if (editBtn) editBtn.addEventListener('click', function(){ editGuestEntry(e); });
       if (delBtn) delBtn.addEventListener('click', function(){ deleteGuestEntry(e); });
     });
+  }
+  function renderLetterTrack(){
+    var track = $('letter-track');
+    if (!state.gEntries.length) {
+      track.innerHTML = '<div class="letter-card"><div class="l-empty">첫 번째 축하 메시지를 남겨주세요</div></div>';
+      return;
+    }
+    track.innerHTML = state.gEntries.map(function(e){
+      return '<div class="letter-card" data-id="' + escapeHtml(e.id) + '">' + letterCardInner(e) + '</div>';
+    }).join('');
+    bindCardActions(track);
   }
 
   function editGuestEntry(e){
@@ -780,20 +784,9 @@
       return;
     }
     $('guest-overlay-list').innerHTML = state.gEntries.map(function(e){
-      return '<div class="guest-item" data-id="' + escapeHtml(e.id) + '"><span class="name">' + escapeHtml(e.name) + '</span>' +
-        '<div class="msg">' + escapeHtml(e.msg) + '</div>' +
-        '<div class="item-actions"><button data-act="edit">수정</button><button data-act="delete">삭제</button></div>' +
-        '</div>';
+      return '<div class="letter-list-card" data-id="' + escapeHtml(e.id) + '">' + letterCardInner(e) + '</div>';
     }).join('');
-    Array.prototype.forEach.call($('guest-overlay-list').querySelectorAll('.guest-item'), function(item){
-      var id = item.getAttribute('data-id');
-      var e = state.gEntries.find(function(x){ return x.id === id; });
-      if (!e) return;
-      var editBtn = item.querySelector('[data-act="edit"]');
-      var delBtn = item.querySelector('[data-act="delete"]');
-      if (editBtn) editBtn.addEventListener('click', function(){ editGuestEntry(e); });
-      if (delBtn) delBtn.addEventListener('click', function(){ deleteGuestEntry(e); });
-    });
+    bindCardActions($('guest-overlay-list'));
   }
   function openGuestOverlay(){
     renderGuestOverlayList();
