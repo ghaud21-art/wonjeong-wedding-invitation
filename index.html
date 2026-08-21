@@ -119,7 +119,6 @@
   .field{width:100%;box-sizing:border-box;margin-top:10px;padding:11px 12px;border:1px solid var(--line-input);border-radius:8px;font-size:13px;background:var(--sub-card);outline:none;}
   .field + .field{margin-top:8px;}
   textarea.field{resize:none;}
-  .field-counter{margin-top:4px;text-align:right;font-size:10.5px;color:var(--text-dim2);}
   .btn-solid-sage{margin-top:10px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--sage);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
   .btn-solid-dark{margin-top:12px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--dark);color:#fff;font-size:13px;letter-spacing:2px;cursor:pointer;}
 
@@ -295,8 +294,7 @@
     <div class="card">
       <div class="card-title">축하 메시지 남기기</div>
       <input type="text" id="guest-name" class="field" placeholder="이름">
-      <textarea id="guest-msg" class="field" placeholder="따뜻한 축하의 한마디를 남겨주세요" rows="3" maxlength="120"></textarea>
-      <div class="field-counter" id="guest-msg-counter">0 / 120</div>
+      <textarea id="guest-msg" class="field" placeholder="따뜻한 축하의 한마디를 남겨주세요" rows="3"></textarea>
       <input type="password" id="guest-pw" class="field" placeholder="비밀번호 (수정·삭제 시 필요해요)" inputmode="numeric">
       <button class="btn-solid-sage" id="guest-submit">남기기</button>
     </div>
@@ -825,12 +823,8 @@
     state.gEntries = [{ id: id, name: name, msg: msg, time: time }].concat(state.gEntries);
     renderGuestList();
     $('guest-name').value = ''; $('guest-msg').value = ''; $('guest-pw').value = '';
-    $('guest-msg-counter').textContent = '0 / 120';
     $('letter-track').scrollTo({ left: 0, behavior: 'smooth' });
     showToast('소중한 메시지 감사합니다');
-  });
-  $('guest-msg').addEventListener('input', function(){
-    $('guest-msg-counter').textContent = $('guest-msg').value.length + ' / 120';
   });
 
   /* ===================== 참석 여부 ===================== */
